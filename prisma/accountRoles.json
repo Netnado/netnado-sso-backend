@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "name": "Super Admin",
+        "description": "Account that has access to all resources and actions.",
+        "created_at": "2025-01-30T00:00:00.000Z",
+        "updated_at": "2025-01-30T00:00:00.000Z"
+    },
+    {
+        "id": 2,
+        "name": "Admin",
+        "description": "Account that has access to all resources and actions except other users' resources.",
+        "created_at": "2025-01-30T00:00:00.000Z",
+        "updated_at": "2025-01-30T00:00:00.000Z"
+    },
+    {
+        "id": 3,
+        "name": "User",
+        "description": "Account that has access to all resources and actions except other users' resources and account management.",
+        "created_at": "2025-01-30T00:00:00.000Z",
+        "updated_at": "2025-01-30T00:00:00.000Z"
+    },
+    {
+        "id": 4,
+        "name": "Organization Owner",
+        "description": "Account that has access to all resources and actions within their organization.",
+        "created_at": "2025-01-30T00:00:00.000Z",
+        "updated_at": "2025-01-30T00:00:00.000Z"
+    }
+]

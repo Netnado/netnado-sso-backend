@@ -1,0 +1,44 @@
+[
+    {
+        "id": 1,
+        "name": "Local",
+        "description": "User signs up with an email and password stored in the application's database.",
+        "created_at": "2025-01-30T00:00:00.000Z",
+        "updated_at": "2025-01-30T00:00:00.000Z"
+    },
+    {
+        "id": 2,
+        "name": "Google",
+        "description": "User signs up or logs in using their Google account.",
+        "created_at": "2025-01-30T00:00:00.000Z",
+        "updated_at": "2025-01-30T00:00:00.000Z"
+    },
+    {
+        "id": 3,
+        "name": "Facebook",
+        "description": "User signs up or logs in using their Facebook account.",
+        "created_at": "2025-01-30T00:00:00.000Z",
+        "updated_at": "2025-01-30T00:00:00.000Z"
+    },
+    {
+        "id": 4,
+        "name": "Twitter",
+        "description": "User signs up or logs in using their Twitter account.",
+        "created_at": "2025-01-30T00:00:00.000Z",
+        "updated_at": "2025-01-30T00:00:00.000Z"
+    },
+    {
+        "id": 5,
+        "name": "GitHub",
+        "description": "User signs up or logs in using their GitHub account.",
+        "created_at": "2025-01-30T00:00:00.000Z",
+        "updated_at": "2025-01-30T00:00:00.000Z"
+    },
+    {
+        "id": 6,
+        "name": "LinkedIn",
+        "description": "User signs up or logs in using their LinkedIn account.",
+        "created_at": "2025-01-30T00:00:00.000Z",
+        "updated_at": "2025-01-30T00:00:00.000Z"
+    }
+]

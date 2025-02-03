@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Account {
+  id                    String                      @id @default(uuid())
+  public_id             String                      @unique
+  email                 String                      @unique
+  password              String
+  username              String
+
+  public_key            String                      
+  private_key           String                     
+
+  phone_number          String?
+  nickname              String?
+  fullname              String?
+  avatar_url            String?
+  cover_photo_url       String?
+
+  country               String?
+  state                 String?
+  city                  String?
+  address               String?
+  postal_code           String?
+  timezone              String?
+
+
+  status_id             Int
+  status                AccountStatus               @relation(fields: [status_id], references: [id])
+
+  auth_provider_id      Int
+  auth_provider         AuthProvider                @relation(fields: [auth_provider_id], references: [id])
+
+  role_id               Int
+  role                  AccountRole                 @relation(fields: [role_id], references: [id])
+
+  created_at            DateTime                    @default(now())
+  updated_at            DateTime                    @updatedAt
+
+
+  sessions              AccountSession[]
+}
+
+model AccountStatus {
+  id                    Int                         @id @default(autoincrement())
+  name                  String                      @unique
+  description           String?
+  when_to_apply         String?
+  how_to_reset          String?
+  created_at            DateTime                    @default(now())
+  updated_at            DateTime                    @updatedAt
+
+  accounts              Account[]
+}
+
+model AuthProvider {
+  id                    Int                         @id @default(autoincrement())
+  name                  String                      @unique
+  description           String?
+  created_at            DateTime                    @default(now())
+  updated_at            DateTime                    @updatedAt
+
+  accounts              Account[]
+}
+
+model AccountRole {
+  id                    Int                         @id @default(autoincrement())
+  name                  String                      @unique
+  description           String?
+  created_at            DateTime                    @default(now())
+  updated_at            DateTime                    @updatedAt
+
+  accounts              Account[]
+}
+
+model AccountSession {
+  id                    String                      @id @default(uuid())
+
+  account_id            String
+  account               Account                     @relation(fields: [account_id], references: [id])
+
+  refresh_token         String                      @unique
+  refresh_token_expire  DateTime                    @default(now())
+  used_refresh_tokens   String[]
+
+  device                String?
+  ip_address            String?
+  user_agent            String?
+
+  last_active           DateTime                    @default(now())
+  created_at            DateTime                    @default(now())
+  updated_at            DateTime                    @updatedAt
+}

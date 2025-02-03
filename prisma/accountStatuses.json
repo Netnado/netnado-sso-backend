@@ -1,0 +1,74 @@
+[
+    {
+        "id": 1,
+        "name": "Pending",
+        "description": "Limited access to certain features (e.g., cannot perform sensitive operations like changing email or password). The system may send an email or SMS to prompt the user to verify.",
+        "when_to_apply": "When the user has signed up, but their email or phone number needs to be verified (common in systems with two-factor authentication or email confirmation).",
+        "how_to_reset": "Activate through email",
+        "created_at": "2025-01-30T00:00:00.000Z",
+        "updated_at": "2025-01-30T00:00:00.000Z"
+    },
+    {
+        "id": 2,
+        "name": "Active",
+        "description": "User can access all available features of the application. Can be updated when a user is performing normal operations.",
+        "when_to_apply": "This is the default status when the user has successfully signed up, verified their email, and is actively using the platform.",
+        "how_to_reset": null,
+        "created_at": "2025-01-30T00:00:00.000Z",
+        "updated_at": "2025-01-30T00:00:00.000Z"
+    },
+    {
+        "id": 3,
+        "name": "Inactive",
+        "description": "The user is still part of the system but does not have access to the core features. Could require a reactivation step (like email verification or password reset).",
+        "when_to_apply": "When the user has not logged in for a certain period (e.g., months) or has not completed necessary steps (e.g., failed verification).",
+        "how_to_reset": "Reactivation step (like email verification or password reset).",
+        "created_at": "2025-01-30T00:00:00.000Z",
+        "updated_at": "2025-01-30T00:00:00.000Z"
+    },
+    {
+        "id": 4,
+        "name": "Suspended",
+        "description": "The user cannot log in or access the platform. The system may notify the user of the suspension and reasons for it.",
+        "when_to_apply": "When the user violates the platform's terms of service or engages in malicious behavior, leading to a temporary block on their account.",
+        "how_to_reset": "Wait for the suspension is over or contact support for further assistance.",
+        "created_at": "2025-01-30T00:00:00.000Z",
+        "updated_at": "2025-01-30T00:00:00.000Z"
+    },
+    {
+        "id": 5,
+        "name": "Banned",
+        "description": "The user is permanently prevented from accessing the platform. Banning is irreversible, and the system may send a final notice about the ban.",
+        "when_to_apply": "When the user has committed severe violations of the platform's terms of service, leading to a permanent ban.",
+        "how_to_reset": null,
+        "created_at": "2025-01-30T00:00:00.000Z",
+        "updated_at": "2025-01-30T00:00:00.000Z"
+    },
+    {
+        "id": 6,
+        "name": "Deactivated",
+        "description": "The account is still stored in the system, but the user cannot log in or use the platform. May allow the user to reactivate their account within a grace period before full deletion.",
+        "when_to_apply": "When the user decides to leave or delete their account, but the account is not yet fully deleted.",
+        "how_to_reset": "Login again",
+        "created_at": "2025-01-30T00:00:00.000Z",
+        "updated_at": "2025-01-30T00:00:00.000Z"
+    },
+    {
+        "id": 7,
+        "name": "Locked",
+        "description": "The account is temporarily locked to prevent further login attempts, and the user may need to perform a password reset to regain access.",
+        "when_to_apply": "When a user exceeds the maximum number of failed login attempts (e.g., 5 incorrect passwords).",
+        "how_to_reset": "Wait for the exceeds time over or contact admin team",
+        "created_at": "2025-01-30T00:00:00.000Z",
+        "updated_at": "2025-01-30T00:00:00.000Z"
+    },
+    {
+        "id": 8,
+        "name": "Deleted",
+        "description": "The user's data is removed from the system (unless retention policies apply). The account is completely removed from the system.",
+        "when_to_apply": "When the user requests the complete deletion of their account or the system automatically deletes an inactive account after a certain period.",
+        "how_to_reset": null,
+        "created_at": "2025-01-30T00:00:00.000Z",
+        "updated_at": "2025-01-30T00:00:00.000Z"
+    }
+]
