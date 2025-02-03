@@ -3,9 +3,13 @@ import { TokenService } from '@/shared/utils/token.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly tokenService: TokenService) {}
+    constructor(private readonly tokenService: TokenService) {}
 
-  login(user: any) {
-    return this.tokenService.generateToken({ userId: user.id });
-  }
+    async signup(user: any) {
+        return user;
+    }
+
+    login(user: any) {
+        return user;
+    }
 }
