@@ -1,5 +1,6 @@
 import { PrismaService } from '@/prisma/prisma.service';
 import { BcryptHelper } from '@/shared/helpers/bcrypt.helper';
+import { LodashHelper } from '@/shared/helpers/lodash.helper';
 import { CryptoUtil } from '@/shared/utils/crypto.util';
 import { Injectable } from '@nestjs/common';
 
@@ -16,9 +17,11 @@ export class AccountService {
         password: string;
         username: string;
     }): Promise<any> {
-        const existingAccount = await this.findAccountByEmail(email);
+        const existingAccount = await this.prismaService.account.findUnique({
+            where: { email },
+        });
         if (existingAccount) {
-            throw new Error('Email already in use!');
+            throw new Error('Email already in use');
         }
 
         const hashedPassword = BcryptHelper.hash(password);
@@ -26,19 +29,19 @@ export class AccountService {
 
         const localAuthProvider = await this.prismaService.authProvider.findUnique({ where: { name: 'Local' } });
         if (!localAuthProvider) {
-            throw new Error('Local auth provider not found!');
+            throw new Error('Local auth provider not found');
         }
         const pendingAccountStatus = await this.prismaService.accountStatus.findUnique({ where: { name: 'Pending' } });
         if (!pendingAccountStatus) {
-            throw new Error('Pending account status not found!');
+            throw new Error('Pending account status not found');
         }
         const userAccountRole = await this.prismaService.accountRole.findUnique({ where: { name: 'User' } });
         if (!userAccountRole) {
-            throw new Error('User account role not found!');
+            throw new Error('User account role not found');
         }
 
         const { privateKey, publicKey } = CryptoUtil.generateRSAKeysForAccess();
-        return await this.prismaService.account.create({
+        const result = await this.prismaService.account.create({
             data: {
                 email,
                 password: hashedPassword,
@@ -51,6 +54,21 @@ export class AccountService {
                 role_id: userAccountRole.id,
             } as any,
         });
+
+        const resultData = LodashHelper.omit(result, [
+            'password',
+            'public_key',
+            'private_key',
+            'status_id',
+            'auth_provider_id',
+            'role_id',
+        ]);
+        return {
+            ...resultData,
+            status: { id: pendingAccountStatus.id, name: pendingAccountStatus.name },
+            auth_provider: { id: localAuthProvider.id, name: localAuthProvider.name },
+            role: { id: userAccountRole.id, name: userAccountRole.name },
+        };
     }
 
     async findAccountByEmail(email: string) {
