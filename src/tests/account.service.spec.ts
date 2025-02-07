@@ -5,7 +5,7 @@ import {
     validCreateNewAccountParameters,
     validCreateNewAccountPayload,
     validCreateNewAccountResult,
-} from './mocks/account.mock';
+} from '@/tests/mocks/account.mock';
 import { Test } from '@nestjs/testing';
 import { CryptoUtil } from '@/shared/utils/crypto.util';
 import { BcryptHelper } from '@/shared/helpers/bcrypt.helper';
@@ -116,6 +116,56 @@ describe('AccountService', () => {
                 expect(prismaService.accountStatus.findUnique).toHaveBeenCalledWith({ where: { name: 'Pending' } });
                 expect(prismaService.accountRole.findUnique).toHaveBeenCalledWith({ where: { name: 'User' } });
                 expect(error.message).toBe('User account role not found');
+            }
+        });
+
+        it('should throw an error if another error occurred in prisma service', async () => {
+            mockPrismaService.account.findUnique.mockRejectedValue(new Error('Unexpected error'));
+
+            try {
+                await accountService.createNewAccount(validCreateNewAccountPayload);
+            } catch (error: any) {
+                expect(prismaService.account.findUnique).toHaveBeenCalledWith({
+                    where: { email: validCreateNewAccountPayload.email },
+                });
+                expect(error.message).toBe('Unexpected error');
+            }
+        });
+    });
+
+    describe('findAccountByEmail', () => {
+        it('should find account by email successfully', async () => {
+            mockPrismaService.account.findUnique.mockResolvedValue(validCreateNewAccountResult);
+
+            const result = await accountService.findAccountByEmail(validCreateNewAccountPayload.email);
+
+            expect(prismaService.account.findUnique).toHaveBeenCalledWith({
+                where: { email: validCreateNewAccountPayload.email },
+            });
+            expect(result).toEqual(validCreateNewAccountResult);
+        });
+
+        it('should return null if account is not found', async () => {
+            mockPrismaService.account.findUnique.mockResolvedValue(null);
+
+            const result = await accountService.findAccountByEmail(validCreateNewAccountPayload.email);
+
+            expect(prismaService.account.findUnique).toHaveBeenCalledWith({
+                where: { email: validCreateNewAccountPayload.email },
+            });
+            expect(result).toBeNull();
+        });
+
+        it('should throw an error if another error occurred in prisma service', async () => {
+            mockPrismaService.account.findUnique.mockRejectedValue(new Error('Unexpected error'));
+
+            try {
+                await accountService.findAccountByEmail(validCreateNewAccountPayload.email);
+            } catch (error: any) {
+                expect(prismaService.account.findUnique).toHaveBeenCalledWith({
+                    where: { email: validCreateNewAccountPayload.email },
+                });
+                expect(error.message).toBe('Unexpected error');
             }
         });
     });

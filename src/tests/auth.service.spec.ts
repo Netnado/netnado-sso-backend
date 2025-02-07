@@ -31,8 +31,7 @@ describe('AuthService', () => {
 
             expect(accountService.findAccountByEmail).toHaveBeenCalledWith(validSignupPayload.email);
             expect(accountService.createNewAccount).toHaveBeenCalledWith(validSignupPayload);
-            expect(result).toBeDefined();
-            expect(result?.user).toEqual(validSignupResult);
+            expect(result).toEqual({ account: validSignupResult });
         });
 
         it('should throw an error if the email is already in use', async () => {

@@ -13,17 +13,17 @@ export class AuthService {
             throw new Error('Email is already in use');
         }
 
-        const newUser = await this.accountService.createNewAccount({
+        const newAccount = await this.accountService.createNewAccount({
             email,
             password,
             username,
         });
-        return { user: newUser };
+        return { account: newAccount };
     }
 
-    async login(user: any): Promise<any> {
+    async login(account: any): Promise<any> {
         return {
-            user: user,
+            account: account,
             accessToken: 'abcxyz',
         };
     }

@@ -24,8 +24,8 @@ export class AccountService {
             throw new Error('Email already in use');
         }
 
-        const hashedPassword = BcryptHelper.hash(password);
-        const publicId = CryptoUtil.generatePublicId();
+        const hashedPassword: string = await BcryptHelper.hash(password);
+        const publicId: string = CryptoUtil.generatePublicId();
 
         const localAuthProvider = await this.prismaService.authProvider.findUnique({ where: { name: 'Local' } });
         if (!localAuthProvider) {

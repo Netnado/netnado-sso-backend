@@ -30,41 +30,23 @@ describe('AuthController', () => {
     describe('AuthController', () => {
         describe('signup', () => {
             it('should signup new user successfully', async () => {
-                mockAuthService.signup.mockResolvedValue({ user: { ...validSignupPayload, id: 1 } });
+                mockAuthService.signup.mockResolvedValue({ account: { ...validSignupPayload, id: 1 } });
                 const result = await authController.signup(validSignupPayload);
 
                 expect(authService.signup).toHaveBeenCalledWith(validSignupPayload);
                 expect(result).toEqual({
                     statusCode: 201,
-                    message: 'User created successfully',
-                    data: { user: { ...validSignupPayload, id: 1 } },
+                    message: 'Signup successfully',
+                    data: { account: { ...validSignupPayload, id: 1 } },
                 });
             });
 
-            it('should throw an error if email is missing', async () => {
+            it('should throw an error if validation pipe failed', async () => {
                 const payload = { ...validSignupPayload, email: '' };
                 try {
                     await authController.signup(payload);
                 } catch (error) {
-                    expect(error.message).toEqual('Email and username and password are required');
-                }
-            });
-
-            it('should throw an error if username is missing', async () => {
-                const payload = { ...validSignupPayload, username: '' };
-                try {
-                    await authController.signup(payload);
-                } catch (error) {
-                    expect(error.message).toEqual('Email and username and password are required');
-                }
-            });
-
-            it('should throw an error if password is missing', async () => {
-                const payload = { ...validSignupPayload, password: '' };
-                try {
-                    await authController.signup(payload);
-                } catch (error) {
-                    expect(error.message).toEqual('Email and username and password are required');
+                    expect(error.message).toEqual('Validation failed');
                 }
             });
 
