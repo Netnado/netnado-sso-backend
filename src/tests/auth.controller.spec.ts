@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from '@/modules/auth/auth.controller';
 import { AuthService } from '@/modules/auth/auth.service';
-import { validSignupPayload } from '@/tests/mocks/auth.mock';
+import { validLoginPayload, validLoginResult, validSignupPayload } from '@/tests/mocks/auth.mock';
 
 describe('AuthController', () => {
     let authController: AuthController;
@@ -50,10 +50,42 @@ describe('AuthController', () => {
                 }
             });
 
-            it('should throw an error if an error occurred in user service ', async () => {
+            it('should throw an error if an error occurred in auth service ', async () => {
                 mockAuthService.signup.mockRejectedValue(new Error('Something went wrong'));
                 try {
                     await authController.signup(validSignupPayload);
+                } catch (error) {
+                    expect(error.message).toEqual('Something went wrong');
+                }
+            });
+        });
+
+        describe('login', () => {
+            it('should login successfully', async () => {
+                mockAuthService.login.mockResolvedValue(validLoginResult);
+                const result = await authController.login(validLoginPayload);
+
+                expect(authService.login).toHaveBeenCalledWith(validLoginPayload);
+                expect(result).toEqual({
+                    statusCode: 200,
+                    message: 'Login successfully',
+                    data: validLoginResult,
+                });
+            });
+
+            it('should throw an error if validation pipe failed', async () => {
+                const payload = { ...validLoginPayload, keyword: '' };
+                try {
+                    await authController.login(payload);
+                } catch (error) {
+                    expect(error.message).toEqual('Validation failed');
+                }
+            });
+
+            it('should throw an error if an error occurred in auth service', async () => {
+                mockAuthService.login.mockRejectedValue(new Error('Something went wrong'));
+                try {
+                    await authController.login(validLoginPayload);
                 } catch (error) {
                     expect(error.message).toEqual('Something went wrong');
                 }

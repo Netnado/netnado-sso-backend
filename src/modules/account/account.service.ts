@@ -2,7 +2,7 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { BcryptHelper } from '@/shared/helpers/bcrypt.helper';
 import { LodashHelper } from '@/shared/helpers/lodash.helper';
 import { CryptoUtil } from '@/shared/utils/crypto.util';
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class AccountService {
@@ -16,7 +16,7 @@ export class AccountService {
         email: string;
         password: string;
         username: string;
-    }): Promise<any> {
+    }): Promise<object> {
         const existingAccount = await this.prismaService.account.findUnique({
             where: { email },
         });
@@ -52,7 +52,7 @@ export class AccountService {
                 status_id: pendingAccountStatus.id,
                 auth_provider_id: localAuthProvider.id,
                 role_id: userAccountRole.id,
-            } as any,
+            },
         });
 
         const resultData = LodashHelper.omit(result, [
@@ -71,9 +71,58 @@ export class AccountService {
         };
     }
 
-    async findAccountByEmail(email: string) {
-        return this.prismaService.account.findUnique({
+    async findAccountByEmail(email: string): Promise<any> {
+        const foundAccount = await this.prismaService.account.findUnique({
             where: { email },
+            include: {
+                status: true,
+                auth_provider: true,
+                role: true,
+            },
         });
+        if (!foundAccount) {
+            throw new NotFoundException('Account not found');
+        }
+
+        const sanitizedAccount = LodashHelper.omit(foundAccount, ['password', 'public_key', 'private_key']);
+        return sanitizedAccount;
+    }
+
+    async findAccountByLogin(keyword: string): Promise<any> {
+        const foundAccount = await this.prismaService.account.findFirst({
+            where: {
+                OR: [{ email: keyword }, { username: keyword }],
+                NOT: {
+                    status: {
+                        OR: [{ name: 'Deleted' }, { name: 'Banned' }],
+                    },
+                },
+                auth_provider: { name: 'Local' },
+            },
+            include: {
+                status: true,
+                auth_provider: true,
+                role: true,
+            },
+        });
+        if (!foundAccount) {
+            throw new ConflictException('Account not found');
+        }
+
+        // TODO: Implement the logic for locked account here
+        return LodashHelper.omit(foundAccount, ['status_id', 'auth_provider_id', 'role_id']);
+    }
+
+    async findAccountByKeyword(keyword: string): Promise<any> {
+        const foundAccount = await this.prismaService.account.findFirst({
+            where: {
+                OR: [{ email: keyword }, { username: keyword }],
+            },
+        });
+        if (!foundAccount) {
+            throw new Error('Account not found');
+        }
+
+        return LodashHelper.omit(foundAccount, ['password', 'public_key', 'private_key']);
     }
 }

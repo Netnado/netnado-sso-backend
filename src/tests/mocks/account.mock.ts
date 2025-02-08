@@ -59,3 +59,14 @@ export const validCreateNewAccountResult = {
     auth_provider: { id: 1, name: 'Local' },
     role: { id: 1, name: 'User' },
 };
+
+export function validFindAccountByEmailParameters(email: string) {
+    return {
+        where: { email: email },
+        include: {
+            status: true,
+            auth_provider: true,
+            role: true,
+        },
+    };
+}

@@ -1,8 +1,15 @@
 import { AuthService } from '@/modules/auth/auth.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AccountService } from '@/modules/account/account.service';
-
-import { mockAccountService, validSignupPayload, validSignupResult } from '@/tests/mocks/auth.mock';
+import { BcryptHelper } from '@/shared/helpers/bcrypt.helper';
+import { JwtHelper } from '@/shared/helpers/jwt.helper';
+import {
+    mockAccountService,
+    validLoginPayload,
+    validLoginResult,
+    validSignupPayload,
+    validSignupResult,
+} from '@/tests/mocks/auth.mock';
 
 describe('AuthService', () => {
     let authService: AuthService;
@@ -53,6 +60,23 @@ describe('AuthService', () => {
                 expect(accountService.findAccountByEmail).toHaveBeenCalledWith(validSignupPayload.email);
                 expect(error.message).toBe('Unexpected error');
             }
+        });
+    });
+
+    describe('login', () => {
+        it('should login successfully', async () => {
+            mockAccountService.findAccountByLogin.mockResolvedValue(validLoginResult.account);
+            jest.spyOn(BcryptHelper, 'compare').mockResolvedValue(true);
+            jest.spyOn(JwtHelper, 'generateAccessToken').mockReturnValue('access-token');
+            jest.spyOn(JwtHelper, 'generateRefreshToken').mockReturnValue('refresh-token');
+
+            const result = await authService.login(validLoginPayload);
+
+            expect(accountService.findAccountByLogin).toHaveBeenCalledWith(validLoginPayload.keyword);
+            expect(BcryptHelper.compare).toHaveBeenCalled();
+            expect(JwtHelper.generateAccessToken).toHaveBeenCalled();
+            expect(JwtHelper.generateRefreshToken).toHaveBeenCalled();
+            expect(result).toEqual(validLoginResult);
         });
     });
 });

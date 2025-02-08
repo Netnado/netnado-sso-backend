@@ -14,7 +14,9 @@ export class LodashHelper {
     }
 
     static omit(value: any, keys: string[]): any {
-        return _.omit(value, keys);
+        const object = _.omit(value, keys);
+        // Remove undefined values
+        return _.pickBy(object, _.identity);
     }
 
     static pick(value: any, keys: string[]): any {

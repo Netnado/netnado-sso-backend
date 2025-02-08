@@ -1,8 +1,9 @@
 import { AuthSignupDto } from '@/modules/auth/dto/auth-signup.dto';
 
 export const mockAccountService = {
-    findAccountByEmail: jest.fn(),
     createNewAccount: jest.fn(),
+    findAccountByEmail: jest.fn(),
+    findAccountByLogin: jest.fn(),
 };
 
 export const validSignupPayload: AuthSignupDto = {
@@ -13,5 +14,17 @@ export const validSignupPayload: AuthSignupDto = {
 
 export const validSignupResult = {
     id: 1,
-    ...validSignupPayload,
+    email: 'test@tester.gmail.com',
+    username: 'netnado tester',
+};
+
+export const validLoginPayload = {
+    keyword: 'test@tester.gmail.com',
+    password: '123Jest!@#',
+};
+
+export const validLoginResult = {
+    account: { ...validSignupResult },
+    accessToken: 'access-token',
+    refreshToken: 'refresh-token',
 };
