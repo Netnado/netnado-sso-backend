@@ -92,11 +92,7 @@ export class AccountService {
         const foundAccount = await this.prismaService.account.findFirst({
             where: {
                 OR: [{ email: keyword }, { username: keyword }],
-                NOT: {
-                    status: {
-                        OR: [{ name: 'Deleted' }, { name: 'Banned' }],
-                    },
-                },
+                status: { name: { notIn: ['Deleted', 'Banned'] } },
                 auth_provider: { name: 'Local' },
             },
             include: {
@@ -109,7 +105,10 @@ export class AccountService {
             throw new ConflictException('Account not found');
         }
 
-        // TODO: Implement the logic for locked account here
+        const isLockedAccount: boolean = this.isLockedAccount(foundAccount);
+        if (isLockedAccount) {
+            throw new ConflictException('Account is locked until: ' + foundAccount.lock_expires_at);
+        }
         return LodashHelper.omit(foundAccount, ['status_id', 'auth_provider_id', 'role_id']);
     }
 
@@ -124,5 +123,13 @@ export class AccountService {
         }
 
         return LodashHelper.omit(foundAccount, ['password', 'public_key', 'private_key']);
+    }
+
+    isLockedAccount(account: any): boolean {
+        if (!account || !account?.status || !account?.status?.name || account.status.name !== 'Locked') {
+            return false;
+        }
+
+        return (account.lock_expires_at && new Date(account.lock_expires_at) > new Date()) || false;
     }
 }

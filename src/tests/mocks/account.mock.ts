@@ -4,6 +4,7 @@ export const mockPrismaService = {
     account: {
         create: jest.fn(),
         findUnique: jest.fn(),
+        findFirst: jest.fn(),
     },
     accountRole: {
         findUnique: jest.fn(),
@@ -36,6 +37,9 @@ export const validCreateNewAccountPayload: CreateNewAccountDto = {
     username: 'netnado tester',
 };
 
+export const validFindAccountByLoginPayload = { ...validCreateNewAccountPayload, password: undefined };
+export const validFindAccountByKeywordPayload = { keyword: 'netnado tester' };
+
 export const validCreateNewAccountParameters = {
     data: {
         email: 'test@tester.gmail.com',
@@ -60,13 +64,5 @@ export const validCreateNewAccountResult = {
     role: { id: 1, name: 'User' },
 };
 
-export function validFindAccountByEmailParameters(email: string) {
-    return {
-        where: { email: email },
-        include: {
-            status: true,
-            auth_provider: true,
-            role: true,
-        },
-    };
-}
+export const validFindAccountByLoginResult = { ...validCreateNewAccountResult };
+export const validFindAccountByKeywordResult = { ...validCreateNewAccountResult };

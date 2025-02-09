@@ -4,6 +4,8 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+// MIGRATE PRISMA COMMAND: `npx prisma migrate dev`
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -46,6 +48,11 @@ model Account {
 
   role_id               Int
   role                  AccountRole                 @relation(fields: [role_id], references: [id])
+
+  login_attempts_count  Int                         @default(0)
+
+  lock_expires_at       DateTime?
+
 
   created_at            DateTime                    @default(now())
   updated_at            DateTime                    @updatedAt
