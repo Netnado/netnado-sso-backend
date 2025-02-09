@@ -6,6 +6,10 @@ export const mockAccountService = {
     findAccountByLogin: jest.fn(),
 };
 
+export const mockAccountSessionService = {
+    createNewAccountSession: jest.fn(),
+};
+
 export const validSignupPayload: AuthSignupDto = {
     email: 'test@tester.gmail.com',
     password: '123Jest!@#',
@@ -19,12 +23,22 @@ export const validSignupResult = {
 };
 
 export const validLoginPayload = {
-    keyword: 'test@tester.gmail.com',
-    password: '123Jest!@#',
+    authLoginDto: {
+        keyword: 'test@tester.gmail.com',
+        password: '123Jest!@#',
+    },
+    userAgent: 'user-agent',
+    ipAddress: '127.0.0.1',
 };
 
 export const validLoginResult = {
     account: { ...validSignupResult },
     accessToken: 'access-token',
     refreshToken: 'refresh-token',
+};
+
+export const validLoginSessionResult = {
+    id: 1,
+    userAgent: 'user-agent',
+    ipAddress: '127.0.0.1',
 };

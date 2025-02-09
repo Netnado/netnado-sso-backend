@@ -9,10 +9,12 @@ import { AppService } from '@/app.service';
 import { AppController } from '@/app.controller';
 import { AccountController } from '@/modules/account/account.controller';
 import { AccountModule } from '@/modules/account/account.module';
+import { AccountSessionController } from '@/modules/account-session/account-session.controller';
+import { AccountSessionModule } from '@/modules/account-session/account-session.module';
 
 @Module({
-    imports: [ConfigModule.forRoot({ isGlobal: true }), AuthModule, AccountModule],
-    controllers: [AppController, AuthController, AccountController],
+    imports: [ConfigModule.forRoot({ isGlobal: true }), AuthModule, AccountModule, AccountSessionModule],
+    controllers: [AppController, AuthController, AccountController, AccountSessionController],
     providers: [
         AppService,
         // Add the constants to the providers array

@@ -18,7 +18,7 @@ class IsUsernameOrEmail implements ValidatorConstraintInterface {
             return true;
         }
         // Username validation
-        return value.length >= 3 && value.length <= 100;
+        return value?.length >= 3 && value?.length <= 100;
     }
 
     defaultMessage() {

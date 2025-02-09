@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, Body, Headers, Controller, Ip, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthService } from '@/modules/auth/auth.service';
 import { AuthSignupDto } from '@/modules/auth/dto/auth-signup.dto';
 import { AuthLoginDto } from '@/modules/auth/dto/auth-login.dto';
@@ -32,14 +32,14 @@ export class AuthController {
 
     @Post('login')
     @UsePipes(new ValidationPipe({ transform: true }))
-    async login(@Body() authLoginDto: AuthLoginDto) {
+    async login(@Body() authLoginDto: AuthLoginDto, @Ip() IPAddress: string, @Headers('user-agent') userAgent: string) {
         try {
             const { keyword, password } = authLoginDto;
             if (!keyword || !password) {
                 throw new BadRequestException('Validation failed');
             }
 
-            const result = await this.authService.login(authLoginDto);
+            const result = await this.authService.login(authLoginDto, IPAddress, userAgent);
             if (!result) {
                 throw new BadRequestException('Something went wrong');
             }

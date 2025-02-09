@@ -6,10 +6,16 @@ import { BcryptHelper } from '@/shared/helpers/bcrypt.helper';
 import { JwtHelper } from '@/shared/helpers/jwt.helper';
 import { AuthLoginDto } from '@/modules/auth/dto/auth-login.dto';
 import { LodashHelper } from '@/shared/helpers/lodash.helper';
+import { AccountSessionService } from '@/modules/account-session/account-session.service';
+import { TIME_CONSTANTS } from '@/constants/time';
+import { DateTimeUtil } from '@/shared/utils/datetime.util';
 
 @Injectable()
 export class AuthService {
-    constructor(private readonly accountService: AccountService) {}
+    constructor(
+        private readonly accountService: AccountService,
+        private readonly accountSessionService: AccountSessionService,
+    ) {}
 
     sanitizeAccount(account: any): any {
         if (account?.status?.name && account?.role?.name && account?.auth_provider?.name) {
@@ -41,16 +47,17 @@ export class AuthService {
         };
     }
 
-    async login(authLoginDto: AuthLoginDto): Promise<any> {
+    async login(authLoginDto: AuthLoginDto, IPAddress: string, userAgent: string): Promise<any> {
         const { keyword, password } = authLoginDto;
         const existingAccount = await this.accountService.findAccountByLogin(keyword);
         if (!existingAccount) {
-            throw new ConflictException('Account not found');
+            throw new ConflictException('Incorrect keyword or password');
         }
 
         const isPasswordMatched: boolean = await BcryptHelper.compare(password, existingAccount.password);
         if (!isPasswordMatched) {
-            throw new ConflictException('Password is incorrect');
+            // TODO: Add failed login attempt logic here
+            throw new ConflictException('Incorrect keyword or password');
         }
 
         const accessToken: string = JwtHelper.generateAccessToken(
@@ -60,6 +67,17 @@ export class AuthService {
         const refreshToken: string = JwtHelper.generateRefreshToken(
             { id: existingAccount?.id, invokedAt: Date.now() },
             existingAccount.private_key,
+        );
+
+        // Create new account session
+        await this.accountSessionService.createNewAccountSession(
+            {
+                accountId: existingAccount.id,
+                refreshToken,
+                refreshTokenExpire: DateTimeUtil.generateDateFromNow(TIME_CONSTANTS.REFRESH_TOKEN_EXPIRE_DAYS),
+            },
+            IPAddress,
+            userAgent,
         );
 
         return {

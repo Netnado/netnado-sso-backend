@@ -63,9 +63,13 @@ describe('AuthController', () => {
         describe('login', () => {
             it('should login successfully', async () => {
                 mockAuthService.login.mockResolvedValue(validLoginResult);
-                const result = await authController.login(validLoginPayload);
+                const result = await authController.login(
+                    validLoginPayload.authLoginDto,
+                    validLoginPayload.userAgent,
+                    validLoginPayload.ipAddress,
+                );
 
-                expect(authService.login).toHaveBeenCalledWith(validLoginPayload);
+                expect(authService.login).toHaveBeenCalled();
                 expect(result).toEqual({
                     statusCode: 200,
                     message: 'Login successfully',
@@ -74,9 +78,9 @@ describe('AuthController', () => {
             });
 
             it('should throw an error if validation pipe failed', async () => {
-                const payload = { ...validLoginPayload, keyword: '' };
+                const payload = { ...validLoginPayload.authLoginDto, keyword: '' };
                 try {
-                    await authController.login(payload);
+                    await authController.login(payload, validLoginPayload.userAgent, validLoginPayload.ipAddress);
                 } catch (error) {
                     expect(error.message).toEqual('Validation failed');
                 }
@@ -85,7 +89,11 @@ describe('AuthController', () => {
             it('should throw an error if an error occurred in auth service', async () => {
                 mockAuthService.login.mockRejectedValue(new Error('Something went wrong'));
                 try {
-                    await authController.login(validLoginPayload);
+                    await authController.login(
+                        validLoginPayload.authLoginDto,
+                        validLoginPayload.userAgent,
+                        validLoginPayload.ipAddress,
+                    );
                 } catch (error) {
                     expect(error.message).toEqual('Something went wrong');
                 }

@@ -101,11 +101,11 @@ model AccountSession {
 
   refresh_token         String                      @unique
   refresh_token_expire  DateTime                    @default(now())
-  used_refresh_tokens   String[]
+
+  logged_out_at         DateTime?
 
   device                String?
   ip_address            String?
-  user_agent            String?
 
   last_active           DateTime                    @default(now())
   created_at            DateTime                    @default(now())
