@@ -2,6 +2,7 @@ import { BadRequestException, Body, Headers, Controller, Ip, Post, UsePipes, Val
 import { AuthService } from '@/modules/auth/auth.service';
 import { AuthSignupDto } from '@/modules/auth/dto/auth-signup.dto';
 import { AuthLoginDto } from '@/modules/auth/dto/auth-login.dto';
+import { StringUtil } from '@/shared/utils/string.util';
 
 @Controller('auth')
 export class AuthController {
@@ -21,9 +22,9 @@ export class AuthController {
                 throw new BadRequestException('Something went wrong');
             }
             return {
-                statusCode: 201,
+                status: 201,
                 message: 'Signup successfully',
-                data: result,
+                data: StringUtil.keysToCamelCase(result),
             };
         } catch (error) {
             throw new BadRequestException(error.message);
@@ -44,9 +45,9 @@ export class AuthController {
                 throw new BadRequestException('Something went wrong');
             }
             return {
-                statusCode: 200,
+                status: 200,
                 message: 'Login successfully',
-                data: result,
+                data: StringUtil.keysToCamelCase(result),
             };
         } catch (error) {
             throw new BadRequestException(error.message);

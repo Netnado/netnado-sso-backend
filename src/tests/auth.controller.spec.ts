@@ -35,7 +35,7 @@ describe('AuthController', () => {
 
                 expect(authService.signup).toHaveBeenCalledWith(validSignupPayload);
                 expect(result).toEqual({
-                    statusCode: 201,
+                    status: 201,
                     message: 'Signup successfully',
                     data: { account: { ...validSignupPayload, id: 1 } },
                 });
@@ -71,7 +71,7 @@ describe('AuthController', () => {
 
                 expect(authService.login).toHaveBeenCalled();
                 expect(result).toEqual({
-                    statusCode: 200,
+                    status: 200,
                     message: 'Login successfully',
                     data: validLoginResult,
                 });

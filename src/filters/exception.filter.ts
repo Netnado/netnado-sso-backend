@@ -17,8 +17,8 @@ export class ValidationExceptionFilter implements ExceptionFilter {
         }
 
         response.status(status).json({
-            statusCode: status,
-            error: 'Bad Request',
+            status: status,
+            errorCode: 20002,
             message: message,
         });
     }

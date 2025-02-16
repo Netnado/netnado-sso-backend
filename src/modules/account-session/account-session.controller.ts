@@ -23,7 +23,7 @@ export class AccountSessionController {
                 userAgent,
             );
             return {
-                statusCode: 201,
+                status: 201,
                 message: 'Account session created successfully',
                 data: result,
             };

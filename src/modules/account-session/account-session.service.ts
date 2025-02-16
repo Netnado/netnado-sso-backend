@@ -19,7 +19,7 @@ export class AccountSessionService {
                 refresh_token: refreshToken,
                 refresh_token_expire: refreshTokenExpire,
                 ip_address: IPAddress,
-                user_agent: userAgent,
+                device: userAgent,
             },
         });
 

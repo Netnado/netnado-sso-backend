@@ -11,6 +11,25 @@ export class StringUtil {
     }
 
     static matchPasswordRegex(password: string): boolean {
-        return StringUtil.BCRYPT_PASSWORD_REGEX.test(password);
+      	return StringUtil.BCRYPT_PASSWORD_REGEX.test(password);
+		}
+	
+		static toCamelCase(str: string): string {
+        return str.replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
+    }
+    
+    static keysToCamelCase(obj: any): any {
+        if (Array.isArray(obj)) {
+			return obj.map(v => StringUtil.keysToCamelCase(v));
+		}
+		
+		if (obj !== null && obj.constructor === Object) {
+			return Object.keys(obj).reduce((result, key) => {
+				const camelCaseKey = StringUtil.toCamelCase(key);
+				result[camelCaseKey] = StringUtil.keysToCamelCase(obj[key]);
+				return result;
+			}, {} as any);
+        }
+        return obj;
     }
 }

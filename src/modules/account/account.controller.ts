@@ -20,7 +20,7 @@ export class AccountController {
                 throw new BadRequestException('Something went wrong');
             }
             return {
-                statusCode: 201,
+                status: 201,
                 message: 'Account created successfully',
                 data: result,
             };
