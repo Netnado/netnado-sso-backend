@@ -87,6 +87,11 @@ export class AuthService {
         };
     }
 
+    async logout(accountId: string): Promise<any> { 
+        await this.accountSessionService.logoutAccountSessions(accountId);
+        return { accountId: accountId };
+    }
+
     getAccountTokenPayload(account: any): any {
         return {
             id: account?.id,

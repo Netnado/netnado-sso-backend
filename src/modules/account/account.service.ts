@@ -71,6 +71,23 @@ export class AccountService {
         };
     }
 
+    async findAccountById(id: string): Promise<any> {
+        const foundAccount = await this.prismaService.account.findUnique({
+            where: { id },
+            include: {
+                status: true,
+                auth_provider: true,
+                role: true,
+            },
+        });
+        if (!foundAccount) {
+            throw new NotFoundException('Account not found');
+        }
+
+        const sanitizedAccount = LodashHelper.omit(foundAccount, ['password']);
+        return sanitizedAccount;
+    }
+
     async findAccountByEmail(email: string): Promise<any> {
         const foundAccount = await this.prismaService.account.findUnique({
             where: { email },

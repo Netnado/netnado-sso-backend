@@ -59,6 +59,8 @@ model Account {
 
 
   sessions              AccountSession[]
+
+  logs                  ActivityLog[]
 }
 
 model AccountStatus {
@@ -107,7 +109,33 @@ model AccountSession {
   device                String?
   ip_address            String?
 
+  organization_id       String?
+  organization          Organization?               @relation(fields: [organization_id], references: [id])
+
   last_active           DateTime                    @default(now())
   created_at            DateTime                    @default(now())
   updated_at            DateTime                    @updatedAt
+}
+
+model Organization {
+  id          String           @id @default(uuid())
+  name        String           @unique
+  description String?
+
+  created_at  DateTime         @default(now())
+  updated_at  DateTime         @updatedAt
+
+  sessions    AccountSession[]
+  logs       ActivityLog[]
+}
+
+model ActivityLog {
+  id             String        @id @default(uuid())
+  account_id      String
+  account        Account       @relation(fields: [account_id], references: [id])
+
+  organization_id String?
+  organization   Organization? @relation(fields: [organization_id], references: [id])
+
+  activeAt       DateTime      @default(now())
 }

@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Headers, Controller, Ip, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, Body, Headers, Controller, Ip, Post, UsePipes, ValidationPipe, UseGuards, Request, Req } from '@nestjs/common';
 import { AuthService } from '@/modules/auth/auth.service';
 import { AuthSignupDto } from '@/modules/auth/dto/auth-signup.dto';
 import { AuthLoginDto } from '@/modules/auth/dto/auth-login.dto';
 import { StringUtil } from '@/shared/utils/string.util';
+import { SessionAuthGuard } from '@/modules/auth/auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -48,6 +49,28 @@ export class AuthController {
                 status: 200,
                 message: 'Login successfully',
                 data: StringUtil.keysToCamelCase(result),
+            };
+        } catch (error) {
+            throw new BadRequestException(error.message);
+        }
+    }
+
+    @UseGuards(SessionAuthGuard)
+    @Post('logout')
+    async logout(@Req() req: any) {
+        try {
+            if (!req.account) {
+                throw new BadRequestException('Account not found');
+            }
+
+            const result = await this.authService.logout(req.account.id);
+            if (!result) {
+                throw new BadRequestException('Something went wrong');
+            }
+            return {
+                status: 200,
+                message: 'Logout successfully',
+                data: result,
             };
         } catch (error) {
             throw new BadRequestException(error.message);
